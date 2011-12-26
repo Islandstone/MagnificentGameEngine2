@@ -15,13 +15,15 @@ public:
 
         void Render() { updateGL(); }
         bool shouldClose() { return m_bShouldClose; }
+		void RenderText(int x, int y, std::wstring str);
+
 protected:
 
         void closeEvent(QCloseEvent *event) { m_bShouldClose = true; event->accept();/* QGLWidget::close(); */ }
         void initializeGL();
         void resizeGL(int width, int height);
         void paintGL();
-        void RenderText(int x, int y, std::wstring &str);
+
     
         bool m_bShouldClose;
 

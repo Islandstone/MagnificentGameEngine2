@@ -1,5 +1,8 @@
 #include "base.h"
 #include "input.h"
+#include "engine.h"
+
+#include <sstream>
 
 void ZeroFill( char *array, int count )
 {
@@ -28,30 +31,84 @@ void CInput::PostRender()
 
 void CInput::SetKeyUp(int keycode)
 {
-    m_pCurrentState[keycode] = 0;
+	int key = keycode;
+	if (key >= 255) 
+	{
+		key -= 0x01000000;
+		if (key >= 255) { return; }
+	}
+
+	/*
+	std::wstringstream st;
+	st << "Key " << key << " released" << std::endl;
+	Engine()->Debug( st.str() );
+	*/
+
+    m_pCurrentState[key] = 0;
 }
 
 void CInput::SetKeyDown(int keycode)
 {
-    m_pCurrentState[keycode] = 1;
+	int key = keycode;
+	if (key >= 255) 
+	{
+		key -= 0x01000000;
+		if (key >= 255) { return; }
+	}
+
+	/*
+	std::wstringstream st;
+	st << "Key " << key << " pressed" << std::endl;
+	Engine()->Debug( st.str() );
+	*/
+	
+    m_pCurrentState[key] = 1;
 }
 
 bool CInput::KeyUp(int keycode)
 {
-    return (m_pCurrentState[keycode] == 0) /*&& (m_pPreviousState[keycode] == 0)*/;
+	int key = keycode;
+	if (key >= 255) 
+	{
+		key -= 0x01000000;
+		if (key >= 255) { return false; }
+	}
+
+    return (m_pCurrentState[key] == 0) /*&& (m_pPreviousState[keycode] == 0)*/;
 }
 
 bool CInput::KeyPressed(int keycode)
 {
-    return (m_pCurrentState[keycode] == 1) && (m_pPreviousState[keycode] == 0);
+	int key = keycode;
+	if (key >= 255) 
+	{
+		key -= 0x01000000;
+		if (key >= 255) { return false; }
+	}
+
+    return (m_pCurrentState[key] == 1) && (m_pPreviousState[key] == 0);
 }
 
 bool CInput::KeyHeld(int keycode)
 {
-    return (m_pCurrentState[keycode] == 1) /*&& (m_pPreviousState[keycode] == 0)*/;
+	int key = keycode;
+	if (key >= 255) 
+	{
+		key -= 0x01000000;
+		if (key >= 255) { return false; }
+	}
+
+    return (m_pCurrentState[key] == 1) && (m_pPreviousState[key] == 1);
 }
 
 bool CInput::KeyReleased(int keycode)
 {
-    return (m_pCurrentState[keycode] == 0) && (m_pPreviousState[keycode] == 1);
+	int key = keycode;
+	if (key >= 255) 
+	{
+		key -= 0x01000000;
+		if (key >= 255) { return false; }
+	}
+
+    return (m_pCurrentState[key] == 0) && (m_pPreviousState[key] == 1);
 }

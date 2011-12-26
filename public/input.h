@@ -1,6 +1,17 @@
 #ifndef INPUT_H
 #define INPUT_H
 
+/*
+TODO: Make this completely cross platform 
+*/
+
+/*
+NOTENOTE: This code uses a little hack. Since some special keys in Qt, the windowing library
+that also is used to catch the input, have an additional bit set, the key codes end up with 
+numbers >= 255. In these cases, an attempt to remove this bit is made and their value is tested again.
+This might mean that two keys might share the same internal key code, but this has not been tested
+*/
+
 #include "game_systems.h"
 
 class CInput : public CGameSystem
@@ -79,6 +90,16 @@ extern inline CInput* Input()
 #define VK_X Qt::Key_X // X key
 #define VK_Y Qt::Key_Y // Y key
 #define VK_Z Qt::Key_Z // Z key
+
+#define VK_Tab Qt::Key_Tab
+#define VK_Esc Qt::Key_Escape
+#define VK_Alt Qt::Key_Alt
+#define VK_Return Qt::Key_Return
+#define VK_Enter Qt::Key_Enter
+
+#define VK_Minus Qt::Key_Minus
+#define VK_Plus Qt::Key_Plus
+
               
 /*
 

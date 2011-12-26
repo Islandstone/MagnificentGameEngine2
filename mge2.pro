@@ -5,7 +5,15 @@
 TEMPLATE = app
 TARGET = engine
 DEPENDPATH += . public src/engine src/include
-INCLUDEPATH += . public src/include /usr/local/include/fmodex
+INCLUDEPATH += . public src/include
+unix:INCLUDEPATH += /usr/local/include/fmodex
+
+win32
+{
+    INCLUDEPATH += "C:/Program Files (x86)/FMOD SoundSystem/FMOD Programmers API Windows/api/inc"
+    DEPENDPATH += "C:/Program Files (x86)/FMOD SoundSystem/FMOD Programmers API Windows/api/lib"
+    LIBS += fmodex_vc.lib
+}
 
 unix:LIBS += -lGL -lGLU -lglut -lfmodex64-4.38.03
 
@@ -22,7 +30,8 @@ HEADERS += public/base.h \
 SOURCES += src/engine/engine.cpp \
            src/engine/gamesystem.cpp \
            src/engine/main.cpp \
-  	   src/engine/input.cpp \
+  	       src/engine/input.cpp \
            src/engine/qt_gl_interface.cpp \
-	   src/engine/sound.cpp
+           src/engine/sound.cpp
+
 QT += opengl

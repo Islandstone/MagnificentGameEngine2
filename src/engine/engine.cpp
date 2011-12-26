@@ -4,7 +4,10 @@
 #include "engine.h"
 #include "qt_gl_interface.h"
 
+#ifndef _WIN32
 #include "unistd.h"
+#endif
+
 #include "time.h"
 
 #include "input.h"
@@ -12,7 +15,11 @@
 
 void msleep( float msec )
 {
+#ifdef _WIN32
+	Sleep(msec);
+#else
     usleep( msec * 1000 );
+#endif
 }
 
 CEngine::CEngine()
@@ -75,6 +82,7 @@ void CEngine::Main()
     QtInterface window;
     window.resize(800, 600);
     window.show();
+	window.raise(); // Bring to front
 
     while ( !window.shouldClose() )
     {
@@ -82,10 +90,21 @@ void CEngine::Main()
         FrameAdvance();
 
         // ESC
-        if ( Input()->KeyPressed( 9 ) )
+        if ( Input()->KeyPressed( VK_Esc ) )
         {
             break;
         }
+		else if (Input()->KeyHeld( VK_Alt ) && ( Input()->KeyReleased( VK_Enter ) || Input()->KeyReleased(VK_Return) ) )
+		{
+			if ( window.isFullScreen() ) 
+			{
+				window.showNormal();
+			}
+			else
+			{
+				window.showFullScreen();
+			}
+		}
             
         for (int i = 0; i < m_vecGameSystems.size(); i++)
         {
@@ -100,7 +119,7 @@ void CEngine::Main()
         }
 
         // We don't really need more than 100 fps, so sleep for 0.01 sec
-        usleep(1000);
+        msleep(10);
     }
 
     Message(L"Engine Main End");
@@ -129,17 +148,21 @@ void CEngine::Stop()
 
 void CEngine::Message( String msg )
 {
-    std::wcout << msg << std::endl;
+	std::wcerr << msg << std::endl;
 }
 
 void CEngine::Debug( String msg )
 {
-    std::wcout << msg << std::endl;
+#ifdef _WIN32
+	OutputDebugStringW( msg.c_str() );
+#else
+    std::wcerr << msg << std::endl;
+#endif
 }
 
 void CEngine::Error( String msg )
 {
-    std::wcout << msg << std::endl;
+    std::wcerr << msg << std::endl;
 }
 
 

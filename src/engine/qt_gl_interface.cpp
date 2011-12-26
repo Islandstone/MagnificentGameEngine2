@@ -4,6 +4,7 @@
 
 #include "input.h"
 #include <QDebug>
+#include <gl\GLU.h>
 
 QtInterface::QtInterface(QWidget *parent) 
     : QGLWidget(parent)
@@ -40,7 +41,7 @@ void QtInterface::resizeGL(int width, int height)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     //gluPerspective(60, (GLfloat)width / (GLfloat)height, 1.0f, 100.0f);
-    gluOrtho2D(0, width, 0, height);
+    gluOrtho2D(0, width, height, 0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -48,16 +49,12 @@ void QtInterface::resizeGL(int width, int height)
 
 void QtInterface::paintGL()
 {
-    //qDebug("GL Paint");
-
-    // Q
-    if ( Input()->KeyHeld( 24 ) )
+    if ( Input()->KeyHeld( VK_W ) )
     {
         m_flRotation -= 1.0f;
     }
 
-    // W
-    if ( Input()->KeyHeld( 25 ) )
+    if ( Input()->KeyHeld( VK_Q ) )
     {
         m_flRotation += 1.0f;
     }
@@ -85,36 +82,27 @@ void QtInterface::paintGL()
     glVertex2f(500, 100);
 
     glEnd();
+
+	//RenderText(2,10, String(L"Test"));
 }
 
 void QtInterface::keyPressEvent(QKeyEvent *event) 
 {
     if ( event->isAutoRepeat() )
     {
-        event->accept();
         return;
     }
 
-    int keycode = event->nativeScanCode();
+	int keycode = event->key();
 
-    if ( keycode >= 255 )
+    /*if ( keycode >= 255 )
     {
-        /*
-        qDebug() << "The following key was not catched: \n";
-        qDebug() << event->text();
-        qDebug() << keycode;
-        */
-        return;
+        qDebug() << "Not registered!:" << "Input:" << event->text() << "pressed (" << keycode << ")";
     }
     else
+	*/
     {
-        if ( !event->isAutoRepeat() ) 
-        {
-            qDebug() << "Key pressed: ";
-            qDebug() << event->text();
-            qDebug() << keycode;
-        }
-
+        //qDebug() << "Input: " << event->text() << " pressed (" << keycode << ")";
         Input()->SetKeyDown( keycode );
     }
 }
@@ -126,27 +114,20 @@ void QtInterface::keyReleaseEvent(QKeyEvent *event)
         return;
     }
 
-    int keycode = event->nativeScanCode();
+    int keycode = event->key();
 
-    if ( keycode >= 255 )
+    /*if ( keycode >= 255 )
     {
-        /*
-        qDebug() << "The following key was not catched: \n";
-        qDebug() << event->text();
-        qDebug() << keycode;
-        */
-        return;
+		qDebug() << "Not registered!:" << "Input:" << event->text() << "released (" << keycode << ")";
     }
-    else
+    else*/
     {
-        qDebug() << "Key released: ";
-        qDebug() << event->text();
-        qDebug() << keycode;
-
+        //qDebug() << "Input:" << event->text() << "released (" << keycode << ")";
         Input()->SetKeyUp( keycode );
     }
 }
 
-void QtInterface::RenderText(int x, int y, std::wstring &str)
+void QtInterface::RenderText(int x, int y, std::wstring str)
 {
+	renderText(x, y, QString::fromStdWString(str) );
 }

@@ -33,7 +33,7 @@ CSoundSystem::CSoundSystem()
 
 bool CSoundSystem::Init()
 {
-    /*
+/*
 * Large portions of this code is based on the initialization code
 * provided with the FMOD installation
 */
@@ -105,14 +105,21 @@ Create a System object and initialize.
         }
     }
 
-    result = m_pSystem->init(100, FMOD_INIT_NORMAL, 0);
+	int flags =
+#ifdef _DEBUG
+			FMOD_INIT_NORMAL | FMOD_INIT_ENABLE_PROFILE;
+#else
+			FMOD_INIT_NORMAL;
+#endif
+
+    result = m_pSystem->init(100, flags, 0);
     
     if (result == FMOD_ERR_OUTPUT_CREATEBUFFER) /* Ok, the speaker mode selected isn't supported by this soundcard. Switch it back to stereo... */
     {
         result = m_pSystem->setSpeakerMode(FMOD_SPEAKERMODE_STEREO);
         ERRCHECK(result);
             
-        result = m_pSystem->init(100, FMOD_INIT_NORMAL, 0);/* ... and re-init. */
+        result = m_pSystem->init(100, flags, 0);/* ... and re-init. */
         ERRCHECK(result);
     }
 
@@ -168,13 +175,13 @@ void CSoundSystem::Update()
 #ifdef ENABLE_FMOD
     m_pSystem->update();
 
-    if ( Input()->KeyReleased( 110 ) && !m_bHasPlayedTest) // HOME
+    if ( Input()->KeyReleased( VK_0 ) && !m_bHasPlayedTest)
     {
         Play(L"startup.mp3");
         m_bHasPlayedTest = true;
     }
     
-    if ( Input()->KeyHeld( 61 )) // -
+    if ( Input()->KeyHeld( VK_Minus )) // -
     {
         FMOD_RESULT res;
         //float curtime = Timer()->CurrentTime();
@@ -204,7 +211,7 @@ void CSoundSystem::Update()
         }
     }
     
-    if ( Input()->KeyHeld( 20 )) // +
+    if ( Input()->KeyHeld( VK_Plus )) // +
     {
         FMOD_RESULT res;
         //float curtime = Timer()->CurrentTime();
