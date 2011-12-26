@@ -100,7 +100,8 @@ extern inline CInput* Input()
 #define VK_Minus Qt::Key_Minus
 #define VK_Plus Qt::Key_Plus
 
-              
+#define VK_f5 Qt::Key_F5
+
 /*
 
 #define VK_0 0x30 // 0 key

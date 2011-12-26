@@ -10,7 +10,13 @@ INCLUDEPATH += . public src/include
 win32 {
     INCLUDEPATH += "$$(FMOD_DIR)/api/inc/"
     QMAKE_LIBDIR +=  "$$(FMOD_DIR)/api/lib/"
-    LIBS += fmodexL_vc.lib
+
+    CONFIG(release, debug|release) {
+        LIBS += fmodex_vc.lib
+    }
+    CONFIG(debug, debug|release) {
+        LIBS += fmodexL_vc.lib
+    }   
 }
 
 unix {

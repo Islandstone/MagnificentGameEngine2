@@ -9,10 +9,18 @@
 #include <gl\GLU.h>
 #endif 
 
+#include <IL\il.h>
+#include <IL\ilu.h>
+#include <IL\ilut.h>
+#include "engine.h"
+
+ILuint g_iTexture1 = 0;
+ILuint g_iTexture2 = 0;
+
 QtInterface::QtInterface(QWidget *parent) 
     : QGLWidget(parent)
 {
-//    setAutoBufferSwap(true);
+    setAutoBufferSwap(true);
 
     qApp->installEventFilter(this);
     m_bShouldClose = false;
@@ -22,6 +30,31 @@ QtInterface::QtInterface(QWidget *parent)
 void QtInterface::initializeGL() 
 {
     qDebug("GL Init");
+
+	if ( ilGetInteger(IL_VERSION_NUM) < IL_VERSION ||
+		 iluGetInteger(ILU_VERSION_NUM) < ILU_VERSION ||
+		 ilutGetInteger(ILUT_VERSION_NUM) < ILUT_VERSION) {
+			printf("DevIL version is different...exiting!\n");
+			Engine()->Stop();
+	} 
+
+	ilInit();
+	iluInit();
+	ilutInit();
+	ilutRenderer( ILUT_OPENGL );
+
+	/*
+	ilGenImages(1, &g_iTexture);
+	ilBindImage(g_iTexture);
+
+	ilLoadImage("splash.bmp");
+
+	qDebug() >> ilutGLTexImage(0);
+	*/
+
+	// TODO: Super-cool function, but we cannot use this in the long run
+	g_iTexture1 = ilutGLLoadImage( "splash.bmp" );
+	g_iTexture2 = ilutGLLoadImage( "logo.bmp" );
 
     /*
     int width=1020, height=768;
@@ -64,8 +97,6 @@ void QtInterface::paintGL()
 
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glColor3f(1,0,0);
-
     if ( m_flRotation >= 360.0f )
     {
         m_flRotation -= 360.0f;
@@ -75,18 +106,43 @@ void QtInterface::paintGL()
         m_flRotation += 360.0f;
     }
 
-    glLoadIdentity();
-    glRotatef(m_flRotation, 0.0f, 0.0f, 1.0f);
+	glPushMatrix();
+	glLoadIdentity();
 
-    glBegin(GL_POLYGON);
+	// (300, 300) screen pos
+	glTranslatef(300, 300, 0);
 
-    glVertex2f(0,0);
-    glVertex2f(100,500);
-    glVertex2f(500, 100);
+	// Rotate around center, which is (256, 256)
+	glTranslatef(256, 256, 0);
+	glRotatef(m_flRotation, 0.0f, 0.0f, 1.0f);
+	glTranslatef(-256, -256, 0);
 
-    glEnd();
+	glColor3f(1,1,1);
 
+	glBindTexture(GL_TEXTURE_2D, g_iTexture2);
+
+	glBegin(GL_QUADS);
+		glTexCoord2f(0.0, 0.0);
+		glVertex3f(0.0, 512.0, 0.0);
+
+		glTexCoord2f(1.0, 0.0);
+		glVertex3f(512.0, 512.0, 0.0);
+
+		glTexCoord2f(1.0, 1.0);
+		glVertex3f(512.0, 0.0, 0.0);
+
+		glTexCoord2f(0.0, 1.0);
+		glVertex3f(0.0, 0.0, 0.0);
+	glEnd();
+
+	glPopMatrix();
+	
 	//RenderText(2,10, String(L"Test"));
+
+	if ( Input()->KeyPressed( VK_f5 ) )
+	{
+		ilutGLScreenie();
+	}
 }
 
 void QtInterface::keyPressEvent(QKeyEvent *event) 
