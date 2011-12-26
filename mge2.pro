@@ -8,8 +8,7 @@ DEPENDPATH += . public src/engine src/include
 INCLUDEPATH += . public src/include
 unix:INCLUDEPATH += /usr/local/include/fmodex
 
-win32
-{
+win32 {
     INCLUDEPATH += "C:/Program Files (x86)/FMOD SoundSystem/FMOD Programmers API Windows/api/inc"
     DEPENDPATH += "C:/Program Files (x86)/FMOD SoundSystem/FMOD Programmers API Windows/api/lib"
     LIBS += fmodex_vc.lib

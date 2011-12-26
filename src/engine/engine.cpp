@@ -119,7 +119,7 @@ void CEngine::Main()
         }
 
         // We don't really need more than 100 fps, so sleep for 0.01 sec
-        msleep(10);
+        msleep(0);
     }
 
     Message(L"Engine Main End");

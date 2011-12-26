@@ -4,7 +4,10 @@
 
 #include "input.h"
 #include <QDebug>
+
+#ifdef _WIN32
 #include <gl\GLU.h>
+#endif 
 
 QtInterface::QtInterface(QWidget *parent) 
     : QGLWidget(parent)
