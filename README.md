@@ -1,4 +1,4 @@
-Magnificent Game Engine (2.0)
+﻿Magnificent Game Engine (2.0)
 =====================================
 
 History
@@ -87,4 +87,4 @@ lot. If you want to help out in any way, feel free to fork it, but you should
 contact me if you plan on doing something major, of if you just have comments 
 or questions. I can be reached at dale.oystein -at- gmail -dot- com.
 
-- �ystein Dale, 2011
+- Øystein Dale, 2011
