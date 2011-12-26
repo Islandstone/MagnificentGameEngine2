@@ -6,15 +6,24 @@ TEMPLATE = app
 TARGET = engine
 DEPENDPATH += . public src/engine src/include
 INCLUDEPATH += . public src/include
-unix:INCLUDEPATH += /usr/local/include/fmodex
 
 win32 {
-    INCLUDEPATH += "C:/Program Files (x86)/FMOD SoundSystem/FMOD Programmers API Windows/api/inc"
-    DEPENDPATH += "C:/Program Files (x86)/FMOD SoundSystem/FMOD Programmers API Windows/api/lib"
-    LIBS += fmodex_vc.lib
+    INCLUDEPATH += "$$(FMOD_DIR)/api/inc/"
+    QMAKE_LIBDIR +=  "$$(FMOD_DIR)/api/lib/"
+    
+    debug {
+        LIBS += fmodexL_vc.lib
+    }
+
+    release {
+        LIBS += fmodex_vc.lib
+    }
 }
 
-unix:LIBS += -lGL -lGLU -lglut -lfmodex64-4.38.03
+unix {
+    INCLUDEPATH += /usr/local/include/fmodex
+    LIBS += -lGL -lGLU -lglut -lfmodex64-4.38.03
+}
 
 # Input
 HEADERS += public/base.h \
