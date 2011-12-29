@@ -34,12 +34,12 @@ There are the new specifications:
 
 * <b>FMOD</b>: FMOD is made for games, it supports a vast amount of sound cards,
  and has a very nice api, so it's difficult to find a reason not to use it.
- The generous licensing is also a huge plus. See <a href="www.fmod.org">this
+ The generous licensing is also a huge plus. See <a href="http://www.fmod.org">this
  page</a> for more information on FMOD.
 
 * <b>Squirrel</b> (TODO): Squirrel is a scripting language made for real-time
   applications like games. By utilizing this, it makes game development on MGE2
-  much quicker. See <a href="www.squirrel-lang.org">this page</a> for more
+  much quicker. See <a href="http://www.squirrel-lang.org">this page</a> for more
   information on Squirrel.
 
 * <b>Shiny</b> (TODO): Shiny did a good job on profiling my last engine, so I
