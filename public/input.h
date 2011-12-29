@@ -97,8 +97,16 @@ extern inline CInput* Input()
 #define VK_Return Qt::Key_Return
 #define VK_Enter Qt::Key_Enter
 
+#define VK_PageUp Qt::Key_PageUp
+#define VK_PageDown Qt::Key_PageDown
+
 #define VK_Minus Qt::Key_Minus
 #define VK_Plus Qt::Key_Plus
+
+#define VK_Up Qt::Key_Up
+#define VK_Down Qt::Key_Down
+#define VK_Left Qt::Key_Left
+#define VK_Right Qt::Key_Right
 
 #define VK_f5 Qt::Key_F5
 

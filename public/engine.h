@@ -2,6 +2,8 @@
 #include "game_systems.h"
 #include "gameinterface.h"
 #include "sound.h"
+#include "base_object.h"
+
 
 #include <QApplication>
 #include <vector>
@@ -28,7 +30,7 @@ public:
 
     void SetFullscreen(bool fullscreen);
     
-//    inline void AddObject( IGameObject *pObject) { m_vecObjectList.push_back(pObject); }
+    inline void AddObject( IGameObject *pObject) { m_vecObjectList.push_back(pObject); }
     
     void Error( String msg );
     void FatalError( String msg );
@@ -36,6 +38,8 @@ public:
     void Debug( String msg );
 
     void SetQtApp(QApplication *app) { m_pApp = app; }
+
+	void Render();
 
 private:
 
@@ -66,7 +70,7 @@ private:
     CSample*            m_pStartupSound;
     */
 
-    //std::vector<IGameObject*>   m_vecObjectList;
+    std::vector<IGameObject*>   m_vecObjectList;
     std::vector<IGameSystem*>   m_vecGameSystems;
 };
 

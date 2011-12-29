@@ -12,6 +12,18 @@
 
 #include "input.h"
 #include "sound.h"
+#include "base_object.h"
+
+#include "timer.h"
+
+#include "squirrel.h"
+#include "sqstdio.h"
+#include "sqrat.h"
+#include "sqratimport.h"
+
+#include "sprite.h"
+
+HSQUIRRELVM vm;
 
 void msleep( float msec )
 {
@@ -22,13 +34,18 @@ void msleep( float msec )
 #endif
 }
 
+std::string wtoa(const std::wstring& wstr)
+{
+   return (std::string(wstr.begin(), wstr.end()));
+}
+
 CEngine::CEngine()
 {
 }
 
 bool CEngine::Init() 
 {
-    Message(L"Engine Init");
+    Message(L"Engine Init\n");
 
     CreateSystems();
 
@@ -36,8 +53,10 @@ bool CEngine::Init()
     {
         return false;
     }
+	
+	Timer()->Start();
     
-    Message(L"Engine Init Successful");
+    Message(L"Engine Init Successful\n");
     return true;
 }
 
@@ -67,29 +86,76 @@ bool CEngine::InitSystems()
 
 void CEngine::Destroy()
 {
-    Message(L"Engine Destroy");
+    Message(L"Engine Destroy\n");
 }
 
 void CEngine::Start()
 {   
-    Message(L"Engine Start");
+    Message(L"Engine Start\n");
 
     Main();
 }
 
+void printfunc(HSQUIRRELVM v, const SQChar *s, ...) 
+{ 
+	static wchar_t temp[2048];
+
+    va_list vl;
+	va_start(vl, s);
+	vswprintf( temp, s, vl );
+	va_end(vl);
+
+	OutputDebugStringW(temp);
+	//OutputDebugStringW(L"\n");
+} 
+
+void debughook(HSQUIRRELVM vm, SQInteger type, const SQChar *sourcename, SQInteger line, const SQChar *funcname)
+{
+
+}
+
 void CEngine::Main()
 {
+	InitFormat();
+
     QtInterface window;
-    window.resize(800, 600);
+    window.resize(1024, 578);
     window.show();
 	window.raise(); // Bring to front
+
+	vm = sq_open(1024);
+	Sqrat::DefaultVM::Set(vm);
+	sq_setprintfunc(vm, printfunc, printfunc);
+
+	//sq_setnativedebughook(vm, debughook);
+
+	sqstd_seterrorhandlers(vm);
+	sqstd_printcallstack(vm);
+
+	sqstd_register_iolib(vm);
+
+	Sqrat::Class<CSprite> spriteDef;
+
+	spriteDef.Func(L"LoadTexture", &CSprite::LoadTexture).Func(L"Think", &CSprite::Think);
+	Sqrat::RootTable().Bind(L"Sprite", spriteDef);
+	
+	Sqrat::Script script;
+
+	try {
+		script.CompileFile(L"myscript.nut");
+		script.Run();
+	} catch(std::exception e) {
+		Debug(L"Script error\n");
+	}
 
     while ( !window.shouldClose() )
     {
         m_pApp->processEvents();
-        FrameAdvance();
+		FrameAdvance();
 
-        // ESC
+		Sqrat::Function f = Sqrat::RootTable().GetFunction(L"OnFrame");
+		f.Execute();
+
         if ( Input()->KeyPressed( VK_Esc ) )
         {
             break;
@@ -122,13 +188,40 @@ void CEngine::Main()
         msleep(0);
     }
 
-    Message(L"Engine Main End");
+	/*
+	HSQUIRRELVM v;
+	v = sq_open(1024);
+
+	sq_pushroottable(v);
+	sq_setprintfunc(v, printfunc, printfunc);
+
+	sqstd_dofile(v, L"myscript.nut", 0, true);
+
+	sq_pushstring(v, L"foo", -1);
+	sq_get(v, -2);
+	sq_pushroottable(v);
+	
+	sq_call(v, 1, false, false);
+	sq_pop(v, 1);
+
+	sq_pushstring(v, L"bar", -1);
+	sq_get(v, -2);
+	sq_pushroottable(v);
+
+	sq_call(v, 1, false, false);
+	sq_pop(v, 1);
+
+	sq_close(v);
+	*/
+
+	sq_close(vm);
+
+    Message(L"Engine Main End\n");
 }
 
 void CEngine::FrameAdvance()
 {
     Update();
-    //Render();
 }
 
 void CEngine::Update()
@@ -137,18 +230,35 @@ void CEngine::Update()
     {
         m_vecGameSystems[i]->Update();
     }
+
+	for (int i = 0; i < m_vecObjectList.size(); i++)
+    {
+        m_vecObjectList[i]->Think();
+    }
+}
+
+void CEngine::Render()
+{
+	for (int i = 0; i < m_vecObjectList.size(); i++)
+    {
+        m_vecObjectList[i]->Render();
+    }
 }
 
 void CEngine::Stop()
 {
-    Message(L"Engine Stop");
+    Message(L"Engine Stop\n");
 
     Destroy();
 }
 
 void CEngine::Message( String msg )
 {
-	std::wcerr << msg << std::endl;
+#ifdef _WIN32
+	OutputDebugStringW( msg.c_str() );
+#else
+    std::wcerr << msg << std::endl;
+#endif
 }
 
 void CEngine::Debug( String msg )

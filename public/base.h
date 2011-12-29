@@ -5,6 +5,9 @@
 
 typedef std::wstring String;
 
+// Hack
+std::string wtoa(const std::wstring& wstr);
+
 #define ARRAYSIZE(array) ( sizeof(array) / sizeof(array[0]) )
 
 #endif

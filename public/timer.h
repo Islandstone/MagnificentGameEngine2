@@ -4,7 +4,7 @@
 class CTimer
 {
 public:
-    // What on earth was "locked" supposed to do?
+    // TODO: What on earth was "locked" supposed to do?
     CTimer( /*bool locked = false*/ );
 
     // This is only a singleton for the global timer.
@@ -29,7 +29,15 @@ protected:
 
 private:
 
-    //bool m_bLocked;
+#ifdef _WIN32
+	__int64 GetPerformanceCount();
+	__int64 GetFrequency();
+
+	__int64 m_iStart;
+	__int64 m_iClockFrequency;
+#endif 
+
+	float m_flStartTime;
 };
 
 extern inline CTimer* Timer()

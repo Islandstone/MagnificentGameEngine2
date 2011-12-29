@@ -6,6 +6,10 @@
 #include <QApplication>
 #include <QKeyEvent>
 
+#include "sprite.h"
+
+extern void InitFormat();
+
 class QtInterface : public QGLWidget
 {
         Q_OBJECT
@@ -31,6 +35,12 @@ protected:
         void keyReleaseEvent(QKeyEvent *event); 
 
         float m_flRotation;
+
+		CSprite *m_pSprite;
+
+		int m_iFrameCount;
+		float m_flLastTime;
+		float m_flFPS;
 };
 #endif /* end of include guard: QT_INTERFACE_HEADER */
 
