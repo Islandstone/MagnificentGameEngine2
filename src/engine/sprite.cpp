@@ -5,11 +5,41 @@
 #include "qt_gl_interface.h"
 #include "input.h"
 #include "timer.h"
+#include "engine.h"
 
 #ifdef _WIN32
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #endif 
+
+#include "script.h"
+
+void BindClass_CSprite()
+{
+	Sqrat::Class<CSprite> def;
+
+	def.Func(L"LoadTexture", &CSprite::LoadTexture);
+	def.Func(L"Spawn", &CSprite::Spawn);
+	def.Func(L"Think", &CSprite::Think);
+	def.Func(L"Render", &CSprite::Render);
+	def.Func(L"SetPos", &CSprite::SetPos );
+	def.Var(L"x", &CSprite::m_flPosX );
+	def.Var(L"y", &CSprite::m_flPosY );
+	def.Var(L"rot", &CSprite::m_flRotation );
+	def.Var(L"scale", &CSprite::m_flScale );
+
+	Sqrat::RootTable().Bind(L"Sprite", def);
+}
+
+ClassBinder spriteBinder(&BindClass_CSprite);
+
+/*
+BEGIN_SCRIPTBIND( CSprite, Sprite )
+	BIND_FUNC( LoadTexture, CSprite::LoadTexture )
+	BIND_FUNC( Think, CSprite::Think )
+	BIND_FUNC( SetPos, CSprite::SetPos )
+END_SCRIPTBIND()
+*/
 
 #define GL_TEXTURE_RECTANGLE_NV 0x84F5
 #define GL_TEXTURE_RECTANGLE_EXT GL_TEXTURE_RECTANGLE_NV
@@ -30,20 +60,30 @@ CSprite::CSprite() : CBaseObject()
 void CSprite::Spawn()
 {
 	SetPos(0, 0);
+	//LoadTexture(L"logo.bmp");
 }
 
 void CSprite::Precache()
 {
-	LoadTexture(L"logo.bmp");
+	//LoadTexture(L"logo.bmp");
 }
 
-bool CSprite::LoadTexture(const wchar_t* filename)
+bool CSprite::LoadTexture(wchar_t* filename)
 {
+	Engine()->PushContext();
+
 	// TODO: Move this into a separate class
 
 	if ( !glIsEnabled( GL_TEXTURE_RECTANGLE_NV ) ) 
 	{
-		m_iTexture = 0;//ilutGLLoadImage( const_cast<wchar_t*>( filename.c_str() ) );
+		m_iTexture = ilutGLLoadImage( filename );
+
+		if (ilGetError() != IL_NO_ERROR)
+			return false;
+
+		m_iWidth = ilGetInteger( IL_IMAGE_WIDTH );
+		m_iHeight = ilGetInteger( IL_IMAGE_HEIGHT );
+
 	}
 	else
 	{
@@ -53,8 +93,15 @@ bool CSprite::LoadTexture(const wchar_t* filename)
 		ilBindImage(texid);
 		ilLoadImage( filename );
 
-		if (ilGetError() != IL_NO_ERROR)
+		ILenum Error = ilGetError();
+
+		if ( Error != IL_NO_ERROR )
+		{
+			sqstd_printcallstack( Sqrat::DefaultVM::Get() );
+			std::wstringstream st; st << L"DevIL Error: " << iluErrorString(Error) << std::endl;
+			Engine()->Debug( st.str() );
 			return false;
+		}
 
 		m_iWidth = ilGetInteger( IL_IMAGE_WIDTH );
 		m_iHeight = ilGetInteger( IL_IMAGE_HEIGHT );
@@ -69,11 +116,27 @@ bool CSprite::LoadTexture(const wchar_t* filename)
 		 ilGetData());
 	}
 
+	//Engine()->PopContext();
 	return true;
 }
 
 void CSprite::Think()
 {
+	/*
+	Sqrat::Object sq_obj = Sqrat::Object(this);
+	Sqrat::Function slot( sq_obj, L"Think" );
+
+	if (slot.IsNull())
+	{
+		Engine()->Debug(L"Null slot\n");
+	} 
+	else
+	{
+		slot.Execute();
+	}
+	*/
+
+	/*
 	float curtime = Timer()->CurrentTime();
 
 	float dt = curtime - m_flLastThinkTime;
@@ -81,31 +144,31 @@ void CSprite::Think()
 	if (dt < 0.01f)
 		return;
 	
-	if ( Input()->KeyHeld( VK_Right ) || Input()->KeyHeld( VK_L ) )
+	if ( Input()->KeyHeld( KEY_RIGHT ) || Input()->KeyHeld( KEY_L) )
 		m_flPosX += 200.0f * dt;
-	if ( Input()->KeyHeld( VK_Left ) || Input()->KeyHeld( VK_H ) )
+	if ( Input()->KeyHeld( KEY_LEFT ) || Input()->KeyHeld( KEY_H) )
 		m_flPosX -= 200.0f * dt;
 
-	if ( Input()->KeyHeld( VK_Up ) || Input()->KeyHeld( VK_K ) )
+	if ( Input()->KeyHeld( KEY_UP ) || Input()->KeyHeld( KEY_K) )
 		m_flPosY -= 200.0f * dt;
-	if ( Input()->KeyHeld( VK_Down ) || Input()->KeyHeld( VK_J ) )
+	if ( Input()->KeyHeld( KEY_DOWN ) || Input()->KeyHeld( KEY_J ) )
 		m_flPosY += 200.0f * dt;
 
 
-	if ( Input()->KeyHeld( VK_PageUp ) ) 
+	if ( Input()->KeyHeld( KEY_PAGEUP ) ) 
 	{
 		m_flScale += 1.5f * dt;
 	}
-	if ( Input()->KeyHeld( VK_PageDown ) ) 
+	if ( Input()->KeyHeld( KEY_PAGEDOWN ) ) 
 	{
 		m_flScale -= 1.5f * dt;
 	}
 
-	if ( Input()->KeyHeld( VK_Q ) )
+	if ( Input()->KeyHeld( KEY_Q ) )
     {
         m_flRotation -= 72.0f * dt;
     }
-    if ( Input()->KeyHeld( VK_W ) )
+    if ( Input()->KeyHeld( KEY_W ) )
     {
         m_flRotation += 72.0f * dt;
     }
@@ -125,14 +188,19 @@ void CSprite::Think()
 		m_flScale = 3.0f;
 
 	m_flLastThinkTime = Timer()->CurrentTime();
+	*/
 }
 
 #define SCALE (30.0f/512.0f)
 
 void CSprite::Render()
 {
+	//Engine()->PushContext();
+
 	glPushMatrix();
 	glLoadIdentity();
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 	glTranslatef(m_flPosX, m_flPosY, 0);
 
@@ -141,24 +209,23 @@ void CSprite::Render()
 	glRotatef(m_flRotation, 0.0f, 0.0f, 1.0f);
 	glTranslatef( -0.5f*(float)(m_iWidth)*SCALE , -0.5f*(float)(m_iHeight)*SCALE, 0);
 
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 	if ( !glIsEnabled( GL_TEXTURE_RECTANGLE_NV ) ) 
 	{
 		glBindTexture(GL_TEXTURE_2D, m_iTexture);
 
 		glBegin(GL_QUADS);
-			glTexCoord2f(0.0, 0.0);
-			glVertex3f(0.0, m_iHeight, 1.0);
-
-			glTexCoord2f(1.0, 0.0);
-			glVertex3f(m_iWidth, m_iHeight, 1.0);
-
-			glTexCoord2f(1.0, 1.0);
-			glVertex3f(m_iWidth, 0.0, 1.0);
-
 			glTexCoord2f(0.0, 1.0);
 			glVertex3f(0.0, 0.0, 1.0);
+
+			glTexCoord2f(1.0, 1.0);
+			glVertex3f(30, 0, 1.0);
+
+			glTexCoord2f(1.0, 0.0);
+			glVertex3f(30, 30.0, 1.0);
+
+			glTexCoord2f(0.0, 0.0);
+			glVertex3f(0.0, 30.0, 1.0);
 		glEnd();
 	}
 	else

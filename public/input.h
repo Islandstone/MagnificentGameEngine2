@@ -9,7 +9,7 @@ TODO: Make this completely cross platform
 NOTENOTE: This code uses a little hack. Since some special keys in Qt, the windowing library
 that also is used to catch the input, have an additional bit set, the key codes end up with 
 numbers >= 255. In these cases, an attempt to remove this bit is made and their value is tested again.
-This might mean that two keys might share the same internal key code, but this has not been tested
+This might mean that two keys might share the same internal key code, but this has not been tested.
 */
 
 #include "game_systems.h"
@@ -54,61 +54,62 @@ extern inline CInput* Input()
     return CInput::GetInstance();
 }
 
-#define VK_0 Qt::Key_0 // 0 key
-#define VK_1 Qt::Key_1 // 1 key
-#define VK_2 Qt::Key_2 // 2 key
-#define VK_3 Qt::Key_3 // 3 key
-#define VK_4 Qt::Key_4 // 4 key
-#define VK_5 Qt::Key_5 // 5 key
-#define VK_6 Qt::Key_6 // 6 key
-#define VK_7 Qt::Key_7 // 7 key
-#define VK_8 Qt::Key_8 // 8 key
-#define VK_9 Qt::Key_9 // 9 key
-#define VK_A Qt::Key_A // A key
-#define VK_B Qt::Key_B // B key
-#define VK_C Qt::Key_C // C key
-#define VK_D Qt::Key_D // D key
-#define VK_E Qt::Key_E // E key
-#define VK_F Qt::Key_F // F key
-#define VK_G Qt::Key_G // G key
-#define VK_H Qt::Key_H // H key
-#define VK_I Qt::Key_I // I key
-#define VK_J Qt::Key_J // J key
-#define VK_K Qt::Key_K // K key
-#define VK_L Qt::Key_L // L key
-#define VK_M Qt::Key_M // M key
-#define VK_N Qt::Key_N // N key
-#define VK_O Qt::Key_O // O key
-#define VK_P Qt::Key_P // P key
-#define VK_Q Qt::Key_Q // Q key
-#define VK_R Qt::Key_R // R key
-#define VK_S Qt::Key_S // S key
-#define VK_T Qt::Key_T // T key
-#define VK_U Qt::Key_U // U key
-#define VK_V Qt::Key_V // V key
-#define VK_W Qt::Key_W // W key
-#define VK_X Qt::Key_X // X key
-#define VK_Y Qt::Key_Y // Y key
-#define VK_Z Qt::Key_Z // Z key
+#define KEY_0 Qt::Key_0 // 0 key
+#define KEY_1 Qt::Key_1 // 1 key
+#define KEY_2 Qt::Key_2 // 2 key
+#define KEY_3 Qt::Key_3 // 3 key
+#define KEY_4 Qt::Key_4 // 4 key
+#define KEY_5 Qt::Key_5 // 5 key
+#define KEY_6 Qt::Key_6 // 6 key
+#define KEY_7 Qt::Key_7 // 7 key
+#define KEY_8 Qt::Key_8 // 8 key
+#define KEY_9 Qt::Key_9 // 9 key
+#define KEY_A Qt::Key_A // A key
+#define KEY_B Qt::Key_B // B key
+#define KEY_C Qt::Key_C // C key
+#define KEY_D Qt::Key_D // D key
+#define KEY_E Qt::Key_E // E key
+#define KEY_F Qt::Key_F // F key
+#define KEY_G Qt::Key_G // G key
+#define KEY_H Qt::Key_H // H key
+#define KEY_I Qt::Key_I // I key
+#define KEY_J Qt::Key_J // J key
+#define KEY_K Qt::Key_K // K key
+#define KEY_L Qt::Key_L // L key
+#define KEY_M Qt::Key_M // M key
+#define KEY_N Qt::Key_N // N key
+#define KEY_O Qt::Key_O // O key
+#define KEY_P Qt::Key_P // P key
+#define KEY_Q Qt::Key_Q // Q key
+#define KEY_R Qt::Key_R // R key
+#define KEY_S Qt::Key_S // S key
+#define KEY_T Qt::Key_T // T key
+#define KEY_U Qt::Key_U // U key
+#define KEY_V Qt::Key_V // V key
+#define KEY_W Qt::Key_W // W key
+#define KEY_X Qt::Key_X // X key
+#define KEY_Y Qt::Key_Y // Y key
+#define KEY_Z Qt::Key_Z // Z key
 
-#define VK_Tab Qt::Key_Tab
-#define VK_Esc Qt::Key_Escape
-#define VK_Alt Qt::Key_Alt
-#define VK_Return Qt::Key_Return
-#define VK_Enter Qt::Key_Enter
+#define KEY_TAB Qt::Key_Tab
+#define KEY_ESC Qt::Key_Escape
+#define KEY_ALT Qt::Key_Alt
+#define KEY_RETURN Qt::Key_Return
+#define KEY_ENTER Qt::Key_Enter
 
-#define VK_PageUp Qt::Key_PageUp
-#define VK_PageDown Qt::Key_PageDown
+#define KEY_PAGEUP Qt::Key_PageUp
+#define KEY_PAGEDOWN Qt::Key_PageDown
+#define KEY_HOME	Qt::Key_Home
 
-#define VK_Minus Qt::Key_Minus
-#define VK_Plus Qt::Key_Plus
+#define KEY_MINUS Qt::Key_Minus
+#define KEY_PLUS Qt::Key_Plus
 
-#define VK_Up Qt::Key_Up
-#define VK_Down Qt::Key_Down
-#define VK_Left Qt::Key_Left
-#define VK_Right Qt::Key_Right
+#define KEY_UP Qt::Key_Up
+#define KEY_DOWN Qt::Key_Down
+#define KEY_LEFT Qt::Key_Left
+#define KEY_RIGHT Qt::Key_Right
 
-#define VK_f5 Qt::Key_F5
+#define KEY_F5 Qt::Key_F5
 
 /*
 

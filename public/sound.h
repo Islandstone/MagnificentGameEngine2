@@ -17,8 +17,9 @@ class CSample;
 
 class CSoundSystem : public CGameSystem
 {
-    CSoundSystem();
 public:
+    CSoundSystem();
+
 
     static CSoundSystem* GetInstance()
     {
@@ -37,6 +38,7 @@ public:
     CSample* CreateSample(const String filename);
 
     void Play(String filename);
+	void Play_(wchar_t *file);
     void StopSound(String filename) {}
 
     void StopAllSounds() {}
@@ -69,10 +71,14 @@ extern inline CSoundSystem* Sound()
 class CSample
 {
 public:
+	CSample();
     ~CSample();
 
+	void Load(wchar_t *file);
     void Play(bool paused = false);
     void Stop();
+
+	void Test();
 
     String GetFilename() { return m_sFilename; }
     

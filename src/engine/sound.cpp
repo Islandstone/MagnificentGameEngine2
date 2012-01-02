@@ -18,10 +18,28 @@ String FMOD_ErrorString(FMOD_RESULT errcode);
 
 #endif
 
-std::string wtoa (const std::wstring& wstr)
+#include "script.h"
+
+void BindSound()
 {
-   return (std::string(wstr.begin(), wstr.end()));
+	Sqrat::Class<CSoundSystem, Sqrat::NoConstructor> def;
+
+	def.Func(L"Play", &CSoundSystem::Play_);
+	def.StaticFunc(L"Get", &CSoundSystem::GetInstance );
+	Sqrat::RootTable().Bind(L"SoundSystem", def);
+
+	// Push the singleton to squirrel
+	sq_pushroottable( Sqrat::DefaultVM::Get() );
+	sq_pushstring( Sqrat::DefaultVM::Get(), L"SoundSystem", -1 );
+	sq_get(  Sqrat::DefaultVM::Get(), -2 );
+	sq_pushstring(  Sqrat::DefaultVM::Get(), L"Sound", -1 );
+	sq_createinstance(  Sqrat::DefaultVM::Get(), -2 );
+	sq_setinstanceup(  Sqrat::DefaultVM::Get(), -1, (SQUserPointer)Sound() );
+	sq_newslot(  Sqrat::DefaultVM::Get(), -4, SQFalse );
+	sq_pop(  Sqrat::DefaultVM::Get(), 2 );
 }
+
+ClassBinder sampleBinder(&BindSound);
 
 CSoundSystem::CSoundSystem()
 {
@@ -140,6 +158,20 @@ void CSoundSystem::Play(const String filename)
 #endif
 }
 
+void CSoundSystem::Play_(wchar_t *file)
+{
+#ifdef ENABLE_FMOD
+	std::wstringstream st; st << file;
+
+	CSample* pSample = CreateSample(st.str());
+
+    if (pSample != NULL)
+    {
+        pSample->Play();
+    }
+#endif
+}
+
 CSample* CSoundSystem::GetSampleByName(const String filename)
 {
 #ifdef ENABLE_FMOD
@@ -175,13 +207,13 @@ void CSoundSystem::Update()
 #ifdef ENABLE_FMOD
     m_pSystem->update();
 
-    if ( Input()->KeyReleased( VK_0 ) && !m_bHasPlayedTest)
+    if ( Input()->KeyReleased( KEY_0 ) && !m_bHasPlayedTest)
     {
         Play(L"startup.mp3");
         m_bHasPlayedTest = true;
     }
     
-    if ( Input()->KeyHeld( VK_Minus )) // -
+    if ( Input()->KeyHeld( KEY_MINUS )) // -
     {
         FMOD_RESULT res;
         //float curtime = Timer()->CurrentTime();
@@ -211,7 +243,7 @@ void CSoundSystem::Update()
         }
     }
     
-    if ( Input()->KeyHeld( VK_Plus )) // +
+    if ( Input()->KeyHeld( KEY_PLUS )) // +
     {
         FMOD_RESULT res;
         //float curtime = Timer()->CurrentTime();
@@ -276,6 +308,22 @@ CSample::CSample(String filename)
     LoadFile();
 }
 
+CSample::CSample()
+{
+#ifdef ENABLE_FMOD
+    m_pSound = NULL;
+    m_pChannel = NULL;
+#endif
+}
+
+void CSample::Load(wchar_t *file)
+{
+	std::wstringstream st; st << file;
+	m_sFilename = st.str();
+
+	LoadFile();
+}
+
 CSample::~CSample()
 {
 #ifdef ENABLE_FMOD
@@ -337,4 +385,9 @@ void CSample::Stop()
         m_pChannel->stop();
     }
 #endif
+}
+
+void CSample::Test() 
+{
+	Engine()->Debug(L"TEST()");
 }

@@ -18,7 +18,7 @@ public:
 	int GetWidth() { return m_iWidth; }
 	int GetHeight() { return m_iHeight; }
 
-	bool LoadTexture(const wchar_t* texture_filename);
+	bool LoadTexture(wchar_t* texture_filename);
 
 	void Think();
 	void Render();
@@ -26,14 +26,16 @@ public:
 	bool ShouldRender() { return true; }
 	bool ShouldThink() { return true; }
 
+	float m_flPosX;
+	float m_flPosY;
+	
+	float m_flRotation;
+	float m_flScale;
+
 protected:
 
 private:
 	// TODO: Vector class
-	float m_flPosX;
-	float m_flPosY;
-	float m_flRotation;
-	float m_flScale;
 
 	float m_flLastThinkTime;
 

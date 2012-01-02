@@ -137,9 +137,11 @@ void QtInterface::initializeGL()
 		qDebug("No texture rectangle support");
 	}
 
+	/*
 	m_pSprite = new CSprite();
 	m_pSprite->Spawn();
 	m_pSprite->Precache();
+	*/
 
 	//TODO: Engine()->Precache();
 
@@ -185,7 +187,7 @@ void QtInterface::paintGL()
 	glClear(GL_COLOR_BUFFER_BIT);
 	Engine()->Render();
 
-	if ( Input()->KeyPressed( VK_f5 ) )
+	if ( Input()->KeyPressed( KEY_F5 ) )
 	{
 		ilutGLScreenie();
 	}

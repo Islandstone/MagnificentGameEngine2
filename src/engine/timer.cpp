@@ -1,6 +1,7 @@
 #include "base.h"
 
 #include "timer.h"
+#include "script.h"
 
 #ifdef _WIN32
 
@@ -12,6 +13,28 @@
 #error NOT UPDATED FOR UNIX!
 
 #endif
+
+void BindTimer()
+{
+	Sqrat::Class<CTimer, Sqrat::NoConstructor> def;
+
+	//def.Func(L"Start", &CTimer::Start
+	def.Func(L"CurrentTime", &CTimer::CurrentTime);
+
+	Sqrat::RootTable().Bind(L"TimerSystem", def);
+
+	// Push the singleton to squirrel
+	sq_pushroottable( Sqrat::DefaultVM::Get() );
+	sq_pushstring( Sqrat::DefaultVM::Get(), L"TimerSystem", -1 );
+	sq_get(  Sqrat::DefaultVM::Get(), -2 );
+	sq_pushstring(  Sqrat::DefaultVM::Get(), L"Timer", -1 );
+	sq_createinstance(  Sqrat::DefaultVM::Get(), -2 );
+	sq_setinstanceup(  Sqrat::DefaultVM::Get(), -1, (SQUserPointer)Timer() );
+	sq_newslot(  Sqrat::DefaultVM::Get(), -4, SQFalse );
+	sq_pop(  Sqrat::DefaultVM::Get(), 2 );
+}
+
+ClassBinder timerBinder(&BindTimer);
 
 CTimer::CTimer()
 {	

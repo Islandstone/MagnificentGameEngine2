@@ -3,7 +3,7 @@
 #include "gameinterface.h"
 #include "sound.h"
 #include "base_object.h"
-
+#include "qt_gl_interface.h"
 
 #include <QApplication>
 #include <vector>
@@ -41,6 +41,9 @@ public:
 
 	void Render();
 
+	void PushContext();
+	void PopContext();
+
 private:
 
     void CreateSystems();
@@ -51,6 +54,7 @@ private:
     void Update();
 
     QApplication*       m_pApp;
+	QtInterface*		m_pWindow;
     
     /*
     IGameFactory*       m_pGameFactory;
