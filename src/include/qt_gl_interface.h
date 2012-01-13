@@ -8,6 +8,9 @@
 
 #include "sprite.h"
 
+#define GL_TEXTURE_RECTANGLE_NV 0x84F5
+#define GL_TEXTURE_RECTANGLE_EXT GL_TEXTURE_RECTANGLE_NV
+
 extern void InitFormat();
 
 class QtInterface : public QGLWidget
@@ -28,15 +31,10 @@ protected:
         void resizeGL(int width, int height);
         void paintGL();
 
-    
         bool m_bShouldClose;
 
         void keyPressEvent(QKeyEvent *event); 
         void keyReleaseEvent(QKeyEvent *event); 
-
-        float m_flRotation;
-
-		CSprite *m_pSprite;
 
 		int m_iFrameCount;
 		float m_flLastTime;
