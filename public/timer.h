@@ -23,6 +23,7 @@ public:
 
     bool IsStarted() { return m_bStarted; }
 
+	int RandomSeed() { return GetPerformanceCount() / GetFrequency(); }
 protected:
 
     bool m_bStarted;

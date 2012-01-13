@@ -109,6 +109,8 @@ extern inline CInput* Input()
 #define KEY_LEFT Qt::Key_Left
 #define KEY_RIGHT Qt::Key_Right
 
+#define KEY_SPACE Qt::Key_Space
+
 #define KEY_F5 Qt::Key_F5
 
 /*

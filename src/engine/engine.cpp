@@ -18,6 +18,7 @@
 
 #include "sprite.h"
 #include "script.h"
+#include "physics.h"
 
 void msleep( float msec )
 {
@@ -59,7 +60,8 @@ void CEngine::CreateSystems()
 {
     AddSystem( Input() );
     AddSystem( Sound() );
-	AddSystem( Script() );
+	AddSystem( Physics() );
+	AddSystem( Script() );	
 }
 
 void CEngine::AddSystem( IGameSystem *pSystem )
@@ -129,13 +131,8 @@ void CEngine::Main()
 				window.showFullScreen();
 			}
 		}
-            
-        for (int i = 0; i < m_vecGameSystems.size(); i++)
-        {
-            m_vecGameSystems[i]->Render();
-        }
-
-        window.Render();
+        
+		window.Render();
 
         for (int i = 0; i < m_vecGameSystems.size(); i++)
         {
@@ -173,6 +170,11 @@ void CEngine::Render()
     {
         m_vecObjectList[i]->Render();
     }
+
+	for (int i = 0; i < m_vecGameSystems.size(); i++)
+	{
+		m_vecGameSystems[i]->Render();
+	}
 }
 
 void CEngine::PushContext()

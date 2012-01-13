@@ -5,6 +5,7 @@
 
 #include "squirrel.h"
 #include "sqstdio.h"
+#include "sqstdblob.h"
 #include "sqrat.h"
 #include "sqratimport.h"
 
@@ -25,7 +26,12 @@ void printfunc(HSQUIRRELVM v, const SQChar *s, ...)
 
 void debughook(HSQUIRRELVM vm, SQInteger type, const SQChar *sourcename, SQInteger line, const SQChar *funcname)
 {
+	std::wstringstream st;
+	st << L"gvim " << sourcename << L" +" << line;
 
+	std::string s = wtoa(st.str());
+
+	system(s.c_str());
 }
 
 CScriptSystem::CScriptSystem()
@@ -45,31 +51,46 @@ bool CScriptSystem::Init()
 {
 	// Init SQ
 	HSQUIRRELVM vm;
+
 	vm = sq_open(1024);
-	Sqrat::DefaultVM::Set(vm);
+	
+	sq_pushroottable(vm);
+
+	sqstd_register_bloblib(vm);
+	sqstd_register_iolib(vm);
+	//sqrat_register_importlib(vm);
+
 	sq_setprintfunc(vm, printfunc, printfunc);
-
 	//sq_setnativedebughook(vm, debughook);
-
 	sqstd_seterrorhandlers(vm);
 	sqstd_printcallstack(vm);
 
-	sqstd_register_iolib(vm);
+	Sqrat::DefaultVM::Set(vm);
 
 	// Bind classes
 	for (int i = 0; i < m_vBinders.size(); i++)
 	{
-		if (m_vBinders[i] == NULL) { Engine()->Debug(L"NULL BINDER!!!\n"); continue; }
+		if (m_vBinders[i] == NULL) 
+		{ 
+			Engine()->Debug(L"NULL BINDER!!!\n"); continue; 
+		}
+
 		m_vBinders[i]->Bind();
 	}
 
 	Sqrat::Script script;
 
 	try {
-		script.CompileFile(L"myscript.nut");
+		script.CompileFile(L"main.nut");
 		script.Run();
+	} catch (Sqrat::Exception e) {
+		Engine()->Debug(L"Script error\n"); 
+		Engine()->Debug( e.Message().c_str() );
+		Engine()->Debug( L"\n" );
+		return false;
 	} catch(std::exception e) {
 		Engine()->Debug(L"Script error\n");
+		return false;
 	}
 
 	// Compile & exec scripts

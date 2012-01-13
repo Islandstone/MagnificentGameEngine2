@@ -1,3 +1,6 @@
+#ifndef _ENGINE_INCLUDE
+#define _ENGINE_INCLUDE
+
 #include "base.h"
 #include "game_systems.h"
 #include "gameinterface.h"
@@ -82,3 +85,5 @@ extern inline CEngine* Engine()
 {
     return CEngine::GetInstance();
 }
+
+#endif

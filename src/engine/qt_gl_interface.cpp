@@ -64,7 +64,7 @@ void InitFormat()
 	QGLFormat fmt;
 
 	fmt.setDoubleBuffer(true);
-	fmt.setSwapInterval(0);
+	fmt.setSwapInterval(1);
 	fmt.setProfile(QGLFormat::CoreProfile);
 
 	QGLFormat::setDefaultFormat(fmt);
@@ -73,16 +73,11 @@ void InitFormat()
 ILuint g_iTexture1 = 0;
 ILuint g_iTexture2 = 0;
 
-#define GL_TEXTURE_RECTANGLE_NV 0x84F5
-#define GL_TEXTURE_RECTANGLE_EXT GL_TEXTURE_RECTANGLE_NV
-
 QtInterface::QtInterface(QWidget *parent) 
     : QGLWidget(parent)
 {
     qApp->installEventFilter(this);
     m_bShouldClose = false;
-
-	m_pSprite = NULL;
 	
 	m_flLastTime = 0.0f;
 	m_iFrameCount = 0;
@@ -119,29 +114,25 @@ void QtInterface::initializeGL()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
 	glEnable(GL_BLEND);		
 	glAlphaFunc(GL_GREATER,0.1);
-	glEnable(GL_ALPHA_TEST);
+	glDisable(GL_ALPHA_TEST);
+
+	glDisable( GL_DEPTH_TEST );
 
 	// By checking this, we can enable some more efficient ways of rendering sprites
 	if ( glh_extension_supported("GL_NV_texture_rectangle") )
 	{
 		qDebug("NV texture rectangle supported!");
-		glEnable( GL_TEXTURE_RECTANGLE_NV );
+		//glEnable( GL_TEXTURE_RECTANGLE_NV );
 	}
 	else if ( glh_extension_supported("GL_EXT_texture_rectangle") )
 	{
 		qDebug("EXT texture rectangle supported!");
-		glEnable( GL_TEXTURE_RECTANGLE_EXT );
+		//glEnable( GL_TEXTURE_RECTANGLE_EXT );
 	}
 	else
 	{
 		qDebug("No texture rectangle support");
 	}
-
-	/*
-	m_pSprite = new CSprite();
-	m_pSprite->Spawn();
-	m_pSprite->Precache();
-	*/
 
 	//TODO: Engine()->Precache();
 
@@ -154,37 +145,52 @@ void QtInterface::initializeGL()
     glMatrixMode(GL_MODELVIEW);
     */
     glClearColor(0,0,0,0);
+	//glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
     setFocusPolicy(Qt::StrongFocus);
-    //grabKeyboard();
-
-	//m_flLastTime = Timer()->CurrentTime();
 }
 
 void QtInterface::resizeGL(int width, int height)
 {
-    qDebug("GL Resize");
+    //qDebug("GL Resize");
 
     glViewport(0,0, (GLsizei)width, (GLsizei)height);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-	//glFrustum( -1.0, 1.0,  1.0, -1.0,  0.1, 10.0 );
-	// parallel:
-	//glOrtho( 0, 1024,  1024, 0,  0.1, 10.0 );
-    //gluPerspective(90, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
+	float viewwidth = 0.0f;
+	float viewheight = 0.0f;
 
-	float worldwidth = 100 * (float)width/(float)height;
+	// delta's from the center of the screen
+	float dx = 0.0f;
+	float dy = 0.0f;
+
+	if ( width >= height )
+	{
+		viewwidth = 100 * (float)width/(float)height;
+		viewheight = 100;	
+		dx = 0.5f * viewwidth - 50.0f;
+	}
+	else
+	{
+		viewwidth = 100;
+		viewheight = 100 * (float)height/(float)width;
+		dy = 0.5f * viewheight - 50.0f;
+	}
 	
-	gluOrtho2D(0, worldwidth, 100, 0);
-	
+	gluOrtho2D(0, viewwidth, viewheight, 0);
+
+	glTranslatef(dx, dy, 0.0f);
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
 
 void QtInterface::paintGL()
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	Engine()->Render();
 
 	if ( Input()->KeyPressed( KEY_F5 ) )

@@ -122,75 +122,10 @@ bool CSprite::LoadTexture(wchar_t* filename)
 
 void CSprite::Think()
 {
-	/*
-	Sqrat::Object sq_obj = Sqrat::Object(this);
-	Sqrat::Function slot( sq_obj, L"Think" );
-
-	if (slot.IsNull())
-	{
-		Engine()->Debug(L"Null slot\n");
-	} 
-	else
-	{
-		slot.Execute();
-	}
-	*/
-
-	/*
-	float curtime = Timer()->CurrentTime();
-
-	float dt = curtime - m_flLastThinkTime;
-
-	if (dt < 0.01f)
-		return;
-	
-	if ( Input()->KeyHeld( KEY_RIGHT ) || Input()->KeyHeld( KEY_L) )
-		m_flPosX += 200.0f * dt;
-	if ( Input()->KeyHeld( KEY_LEFT ) || Input()->KeyHeld( KEY_H) )
-		m_flPosX -= 200.0f * dt;
-
-	if ( Input()->KeyHeld( KEY_UP ) || Input()->KeyHeld( KEY_K) )
-		m_flPosY -= 200.0f * dt;
-	if ( Input()->KeyHeld( KEY_DOWN ) || Input()->KeyHeld( KEY_J ) )
-		m_flPosY += 200.0f * dt;
-
-
-	if ( Input()->KeyHeld( KEY_PAGEUP ) ) 
-	{
-		m_flScale += 1.5f * dt;
-	}
-	if ( Input()->KeyHeld( KEY_PAGEDOWN ) ) 
-	{
-		m_flScale -= 1.5f * dt;
-	}
-
-	if ( Input()->KeyHeld( KEY_Q ) )
-    {
-        m_flRotation -= 72.0f * dt;
-    }
-    if ( Input()->KeyHeld( KEY_W ) )
-    {
-        m_flRotation += 72.0f * dt;
-    }
-
-    if ( m_flRotation >= 360.0f )
-    {
-        m_flRotation -= 360.0f;
-    }
-    else if ( m_flRotation < 0.0f )
-    {
-        m_flRotation += 360.0f;
-    }
-
-	if ( m_flScale < 0.1f )
-		m_flScale = 0.1f;
-	else if ( m_flScale > 3.0f )
-		m_flScale = 3.0f;
-
-	m_flLastThinkTime = Timer()->CurrentTime();
-	*/
 }
 
+
+// TODO: Need to fix this
 #define SCALE (30.0f/512.0f)
 
 void CSprite::Render()
