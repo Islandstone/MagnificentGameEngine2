@@ -3,10 +3,10 @@
 
 #include <string>
 
-typedef std::wstring String;
+typedef std::string String;
 
 // Hack
-std::string wtoa(const std::wstring& wstr);
+//std::string wtoa(const std::wstring& wstr);
 
 #define ARRAYSIZE(array) ( sizeof(array) / sizeof(array[0]) )
 

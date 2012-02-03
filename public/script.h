@@ -2,6 +2,7 @@
 #define _SCRIPT_HEADER_INCLUDE
 
 #include "game_systems.h"
+#include "squirrel.h"
 #include "sqrat.h"
 #include <vector>
 
@@ -31,7 +32,7 @@ public:
 	void Render();
 	void PostRender();
 
-	const String GetName() { return String(L"Script"); }
+	const String GetName() { return String("Script"); }
 
 protected:
 private:
@@ -70,7 +71,7 @@ Macro Madness
 	const SQChar *scriptname = L#script_name; \
 	Sqrat::Class<##class_name> def; 
 
-#define BIND_FUNC( script_name, class_func ) def.Func(L"##script_name", &##class_func );
+#define BIND_FUNC( script_name, class_func ) def.Func("##script_name", &##class_func );
 
 #define END_SCRIPTBIND() Sqrat::RootTable().Bind(scriptname, def); } 
 

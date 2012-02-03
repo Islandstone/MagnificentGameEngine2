@@ -34,7 +34,7 @@ public:
 	virtual void Think() {}
 	virtual void Render() {}
 
-	virtual String Name() { return String(L"base"); }
+	virtual String Name() { return String("base"); }
 
 protected:
 private:

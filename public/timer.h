@@ -23,7 +23,8 @@ public:
 
     bool IsStarted() { return m_bStarted; }
 
-	int RandomSeed() { return GetPerformanceCount() / GetFrequency(); }
+	int RandomSeed();
+
 protected:
 
     bool m_bStarted;
@@ -38,7 +39,7 @@ private:
 	__int64 m_iClockFrequency;
 #endif 
 
-	float m_flStartTime;
+	unsigned long m_ulStartTime;
 };
 
 extern inline CTimer* Timer()

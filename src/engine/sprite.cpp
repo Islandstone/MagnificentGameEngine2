@@ -18,17 +18,17 @@ void BindClass_CSprite()
 {
 	Sqrat::Class<CSprite> def;
 
-	def.Func(L"LoadTexture", &CSprite::LoadTexture);
-	def.Func(L"Spawn", &CSprite::Spawn);
-	def.Func(L"Think", &CSprite::Think);
-	def.Func(L"Render", &CSprite::Render);
-	def.Func(L"SetPos", &CSprite::SetPos );
-	def.Var(L"x", &CSprite::m_flPosX );
-	def.Var(L"y", &CSprite::m_flPosY );
-	def.Var(L"rot", &CSprite::m_flRotation );
-	def.Var(L"scale", &CSprite::m_flScale );
+	def.Func("LoadTexture", &CSprite::LoadTexture);
+	def.Func("Spawn", &CSprite::Spawn);
+	def.Func("Think", &CSprite::Think);
+	def.Func("Render", &CSprite::Render);
+	def.Func("SetPos", &CSprite::SetPos );
+	def.Var("x", &CSprite::m_flPosX );
+	def.Var("y", &CSprite::m_flPosY );
+	def.Var("rot", &CSprite::m_flRotation );
+	def.Var("scale", &CSprite::m_flScale );
 
-	Sqrat::RootTable().Bind(L"Sprite", def);
+	Sqrat::RootTable().Bind("Sprite", def);
 }
 
 ClassBinder spriteBinder(&BindClass_CSprite);
@@ -60,15 +60,15 @@ CSprite::CSprite() : CBaseObject()
 void CSprite::Spawn()
 {
 	SetPos(0, 0);
-	//LoadTexture(L"logo.bmp");
+	//LoadTexture("logo.bmp");
 }
 
 void CSprite::Precache()
 {
-	//LoadTexture(L"logo.bmp");
+	//LoadTexture("logo.bmp");
 }
 
-bool CSprite::LoadTexture(wchar_t* filename)
+bool CSprite::LoadTexture(char* filename)
 {
 	Engine()->PushContext();
 
@@ -98,7 +98,7 @@ bool CSprite::LoadTexture(wchar_t* filename)
 		if ( Error != IL_NO_ERROR )
 		{
 			sqstd_printcallstack( Sqrat::DefaultVM::Get() );
-			std::wstringstream st; st << L"DevIL Error: " << iluErrorString(Error) << std::endl;
+			std::stringstream st; st << "DevIL Error: " << iluErrorString(Error) << std::endl;
 			Engine()->Debug( st.str() );
 			return false;
 		}

@@ -15,18 +15,18 @@ void BindPhysics()
 	using namespace Sqrat;
 
 	Class<CPhysicsSystem, NoConstructor> def;
-	def.Func(L"Scale", &CPhysicsSystem::Scale);
+	def.Func("Scale", &CPhysicsSystem::Scale);
 
-	def.Func(L"CreateBody", &CPhysicsSystem::CreateBody);
-	def.Func(L"CreateWorldOutline", &CPhysicsSystem::CreateWorldOutline);
+	def.Func("CreateBody", &CPhysicsSystem::CreateBody);
+	def.Func("CreateWorldOutline", &CPhysicsSystem::CreateWorldOutline);
 
-	RootTable().Bind(L"PhysicsSystem", def);
+	RootTable().Bind("PhysicsSystem", def);
 
 	// Push the singleton to squirrel
 	sq_pushroottable( Sqrat::DefaultVM::Get() );
-	sq_pushstring( Sqrat::DefaultVM::Get(), L"PhysicsSystem", -1 );
+	sq_pushstring( Sqrat::DefaultVM::Get(), "PhysicsSystem", -1 );
 	sq_get(  Sqrat::DefaultVM::Get(), -2 );
-	sq_pushstring(  Sqrat::DefaultVM::Get(), L"Physics", -1 );
+	sq_pushstring(  Sqrat::DefaultVM::Get(), "Physics", -1 );
 	sq_createinstance(  Sqrat::DefaultVM::Get(), -2 );
 	sq_setinstanceup(  Sqrat::DefaultVM::Get(), -1, (SQUserPointer)Input() );
 	sq_newslot(  Sqrat::DefaultVM::Get(), -4, SQFalse );
@@ -36,35 +36,37 @@ void BindPhysics()
 
 	// b2Vec2
 	Class<b2Vec2> vec2;
-	vec2.Func(L"Set", &b2Vec2::Set);
-	RootTable().Bind(L"b2Vec2", vec2);
+	vec2.Func("Set", &b2Vec2::Set);
+	RootTable().Bind("b2Vec2", vec2);
 
 	// b2ChainShape
 	Class<b2ChainShape> chain;
-	chain.Func(L"CreateLoop", &b2ChainShape::CreateLoop );
-	RootTable().Bind(L"b2ChainShape", chain);
+	chain.Func("CreateLoop", &b2ChainShape::CreateLoop );
+	RootTable().Bind("b2ChainShape", chain);
 
 	// b2CircleShape
+    /*
 	Class<b2CircleShape> circle;
-	circle.Var(L"radius", &b2CircleShape::m_radius);
-	RootTable().Bind(L"b2CircleShape", circle);
+	circle.Var("radius", &b2CircleShape::m_radius);
+	RootTable().Bind("b2CircleShape", circle);
+    */
 
 	// b2BodyDef
 	Class<b2BodyDef> bodydef;
-	bodydef.Var(L"position", &b2BodyDef::position);
-	bodydef.Var(L"linearDamping", &b2BodyDef::linearDamping);
-	bodydef.Var(L"type", &b2BodyDef::type);
-	RootTable().Bind(L"b2BodyDef", bodydef);
+	bodydef.Var("position", &b2BodyDef::position);
+	bodydef.Var("linearDamping", &b2BodyDef::linearDamping);
+	bodydef.Var("type", &b2BodyDef::type);
+	RootTable().Bind("b2BodyDef", bodydef);
 
 	// b2BodyType
 	Enumeration bodyType;
-	bodyType.Const(L"b2_dynamicBody", (int)b2_dynamicBody);
-	ConstTable().Enum( L"bodyType", bodyType);
+	bodyType.Const("b2_dynamicBody", (int)b2_dynamicBody);
+	ConstTable().Enum( "bodyType", bodyType);
 
 	/*
-	ConstTable().Enum(L"b2_staticBody", (int)b2_staticBody);
-	ConstTable().Const(L"b2_kinematicBody", (int)b2_kinematicBody);
-	ConstTable().Const(L"b2_dynamicBody", (int)b2_dynamicBody);
+	ConstTable().Enum("b2_staticBody", (int)b2_staticBody);
+	ConstTable().Const("b2_kinematicBody", (int)b2_kinematicBody);
+	ConstTable().Const("b2_dynamicBody", (int)b2_dynamicBody);
 	*/
 }
 
@@ -249,29 +251,29 @@ void PongCollision::BeginContact(b2Contact* contact)
 	CPongPlayer *pPlayer = NULL;
 	CPongDeathWall *pWall = NULL;
 
-	if ( pObj1->Name() == L"pong_ball" )
+	if ( pObj1->Name() == "pong_ball" )
 	{
 		pBall = (CPongBall*)pObj1;
 	}	
-	else if ( pObj2->Name() == L"pong_ball" )
+	else if ( pObj2->Name() == "pong_ball" )
 	{
 		pBall = (CPongBall*)pObj2;
 	}
 
-	if ( pObj1->Name() == L"pong_player" )
+	if ( pObj1->Name() == "pong_player" )
 	{
 		pPlayer = (CPongPlayer*)pObj1;
 	}
-	else if ( pObj2->Name() == L"pong_player" )
+	else if ( pObj2->Name() == "pong_player" )
 	{
 		pPlayer = (CPongPlayer*)pObj2;
 	}
 
-	if ( pObj1->Name() == L"pong_deathwall" )
+	if ( pObj1->Name() == "pong_deathwall" )
 	{
 		pWall = (CPongDeathWall*)pObj1;
 	}
-	else if ( pObj2->Name() == L"pong_deathwall" )
+	else if ( pObj2->Name() == "pong_deathwall" )
 	{
 		pWall = (CPongDeathWall*)pObj2;
 	}

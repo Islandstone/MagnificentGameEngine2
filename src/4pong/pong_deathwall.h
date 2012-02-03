@@ -9,7 +9,7 @@ class CPongDeathWall : public CBaseObject
 public:
 	CPongDeathWall();
 
-	String Name() { return String(L"pong_deathwall"); }
+	String Name() { return String("pong_deathwall"); }
 
 	void Init(float x, float y, float width, float height);
 

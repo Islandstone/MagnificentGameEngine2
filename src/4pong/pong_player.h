@@ -9,7 +9,7 @@ class CPongPlayer : public CBaseObject
 public:
 	CPongPlayer();
 
-	String Name() { return String(L"pong_player"); }
+	String Name() { return String("pong_player"); }
 
     void Init( bool topdown, float width, float thickness, 
                  float x, float y, float movespeed, 

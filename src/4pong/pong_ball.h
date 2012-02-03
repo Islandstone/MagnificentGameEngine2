@@ -10,7 +10,7 @@ class CPongBall : public CBaseObject
 public:
 	CPongBall();
 
-	String Name() { return String(L"pong_ball"); }
+	String Name() { return String("pong_ball"); }
 
 	void Init( float x, float y, float radius );
 

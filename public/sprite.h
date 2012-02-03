@@ -2,7 +2,7 @@
 #define _SPRITE_HEADER
 
 #include "base_object.h"
-#include "IL\il.h"
+#include "IL/il.h"
 //#include "qt_gl_interface.h"
 
 

@@ -24,15 +24,15 @@ void BindSound()
 {
 	Sqrat::Class<CSoundSystem, Sqrat::NoConstructor> def;
 
-	def.Func(L"Play", &CSoundSystem::Play_);
-	def.StaticFunc(L"Get", &CSoundSystem::GetInstance );
-	Sqrat::RootTable().Bind(L"SoundSystem", def);
+	def.Func("Play", &CSoundSystem::Play_);
+	def.StaticFunc("Get", &CSoundSystem::GetInstance );
+	Sqrat::RootTable().Bind("SoundSystem", def);
 
 	// Push the singleton to squirrel
 	sq_pushroottable( Sqrat::DefaultVM::Get() );
-	sq_pushstring( Sqrat::DefaultVM::Get(), L"SoundSystem", -1 );
+	sq_pushstring( Sqrat::DefaultVM::Get(), "SoundSystem", -1 );
 	sq_get(  Sqrat::DefaultVM::Get(), -2 );
-	sq_pushstring(  Sqrat::DefaultVM::Get(), L"Sound", -1 );
+	sq_pushstring(  Sqrat::DefaultVM::Get(), "Sound", -1 );
 	sq_createinstance(  Sqrat::DefaultVM::Get(), -2 );
 	sq_setinstanceup(  Sqrat::DefaultVM::Get(), -1, (SQUserPointer)Sound() );
 	sq_newslot(  Sqrat::DefaultVM::Get(), -4, SQFalse );
@@ -81,10 +81,10 @@ Create a System object and initialize.
         /*
         wchar_t szStr[255];
         wchar_t *pszStr = &szStr[0];
-        _snwprintf_s(pszStr, ARRAYSIZE(szStr), sizeof(szStr), L"You are using an old version of FMOD, %08x. This program requires %08x", version, FMOD_VERSION );
+        _snwprintf_s(pszStr, ARRAYSIZE(szStr), sizeof(szStr), "You are using an old version of FMOD, %08x. This program requires %08x", version, FMOD_VERSION );
         */
 
-        Engine()->Error(L"Old version of FMOD in use!");
+        Engine()->Error("Old version of FMOD in use!");
         return false;
     }
     
@@ -107,7 +107,7 @@ Create a System object and initialize.
         if (caps & FMOD_CAPS_HARDWARE_EMULATED) /* The user has the 'Acceleration' slider set to off! This is really bad for latency!. */
         { /* You might want to warn the user about this. */
 
-            Engine()->Error(L"Hardware accelerated sound has been disabled.\nTo ensure optimum sound quality, go to Control Panel -> Sound -> Volume(tab) -> Advanced(button) -> Performance(tab)\nand partially or fully enable hardware acceleration");
+            Engine()->Error("Hardware accelerated sound has been disabled.\nTo ensure optimum sound quality, go to Control Panel -> Sound -> Volume(tab) -> Advanced(button) -> Performance(tab)\nand partially or fully enable hardware acceleration");
 
             result = m_pSystem->setDSPBufferSize(1024, 10);
             ERRCHECK(result);
@@ -158,10 +158,10 @@ void CSoundSystem::Play(const String filename)
 #endif
 }
 
-void CSoundSystem::Play_(wchar_t *file)
+void CSoundSystem::Play_(char* file)
 {
 #ifdef ENABLE_FMOD
-	std::wstringstream st; st << file;
+	std::stringstream st; st << file;
 
 	CSample* pSample = CreateSample(st.str());
 
@@ -209,7 +209,7 @@ void CSoundSystem::Update()
 
     if ( Input()->KeyReleased( KEY_0 ) && !m_bHasPlayedTest)
     {
-        Play(L"startup.mp3");
+        Play("startup.mp3");
         m_bHasPlayedTest = true;
     }
     
@@ -217,7 +217,7 @@ void CSoundSystem::Update()
     {
         FMOD_RESULT res;
         //float curtime = Timer()->CurrentTime();
-        //Engine()->Debug(L"Decreasing volume\n");
+        //Engine()->Debug("Decreasing volume\n");
         
         FMOD::ChannelGroup *pChannelGroup;
         res = m_pSystem->getMasterChannelGroup(&pChannelGroup);
@@ -316,9 +316,9 @@ CSample::CSample()
 #endif
 }
 
-void CSample::Load(wchar_t *file)
+void CSample::Load(char *file)
 {
-	std::wstringstream st; st << file;
+	std::stringstream st; st << file;
 	m_sFilename = st.str();
 
 	LoadFile();
@@ -340,12 +340,12 @@ void CSample::LoadFile()
 {
 #ifdef ENABLE_FMOD
     FMOD_RESULT result = FMOD_OK;
-    result = Sound()->FMODSystem()->createStream( wtoa(m_sFilename).c_str(), FMOD_DEFAULT | FMOD_CREATESTREAM, NULL, &m_pSound);
+    result = Sound()->FMODSystem()->createStream( m_sFilename.c_str(), FMOD_DEFAULT | FMOD_CREATESTREAM, NULL, &m_pSound);
 
     if (result != FMOD_OK)
     {
 #ifdef DEBUG
-        String str = L"Failed to load sound file " + m_sFilename + L", Error code was: " + FMOD_ErrorString(result);
+        String str = "Failed to load sound file " + m_sFilename + L", Error code was: " + FMOD_ErrorString(result);
         Engine()->Debug(str);
 #endif
     }
@@ -366,12 +366,12 @@ void CSample::Play(bool paused)
 
     if (result != FMOD_OK)
     {
-        String str(L"Failed to load sound file " + m_sFilename);
+        String str("Failed to load sound file " + m_sFilename);
         Engine()->Error(str);
 
 #ifdef DEBUG
-        str.append(L", Error code was: " + FMOD_ErrorString(result) );
-        Engine()->Debug(String(L"Failed to load sound file ") );
+        str.append(", Error code was: " + FMOD_ErrorString(result) );
+        Engine()->Debug(String("Failed to load sound file ") );
 #endif
     }
 #endif
@@ -389,5 +389,5 @@ void CSample::Stop()
 
 void CSample::Test() 
 {
-	Engine()->Debug(L"TEST()");
+	Engine()->Debug("TEST()");
 }

@@ -11,28 +11,30 @@
 
 void printfunc(HSQUIRRELVM v, const SQChar *s, ...) 
 {
-	static wchar_t temp[2048];
+	static char temp[2048];
 
     va_list vl;
 	va_start(vl, s);
-	vswprintf( temp, s, vl );
+	vsprintf( temp, s, vl );
 	va_end(vl);
 
 	//OutputDebugStringW(temp);
-	std::wstringstream st; st << temp;
+	std::stringstream st; st << temp;
 	Engine()->Debug( st.str() );
-	//OutputDebugStringW(L"\n");
+	//OutputDebugStringW("\n");
 } 
 
+/*
 void debughook(HSQUIRRELVM vm, SQInteger type, const SQChar *sourcename, SQInteger line, const SQChar *funcname)
 {
 	std::wstringstream st;
-	st << L"gvim " << sourcename << L" +" << line;
+	st << "gvim " << sourcename << L" +" << line;
 
-	std::string s = wtoa(st.str());
+	std::string s = st.str();
 
 	system(s.c_str());
 }
+*/
 
 CScriptSystem::CScriptSystem()
 {
@@ -72,7 +74,7 @@ bool CScriptSystem::Init()
 	{
 		if (m_vBinders[i] == NULL) 
 		{ 
-			Engine()->Debug(L"NULL BINDER!!!\n"); continue; 
+			Engine()->Debug("NULL BINDER!!!\n"); continue; 
 		}
 
 		m_vBinders[i]->Bind();
@@ -81,15 +83,15 @@ bool CScriptSystem::Init()
 	Sqrat::Script script;
 
 	try {
-		script.CompileFile(L"main.nut");
+		script.CompileFile("main.nut");
 		script.Run();
 	} catch (Sqrat::Exception e) {
-		Engine()->Debug(L"Script error\n"); 
+		Engine()->Debug("Script error\n"); 
 		Engine()->Debug( e.Message().c_str() );
-		Engine()->Debug( L"\n" );
+		Engine()->Debug( "\n" );
 		return false;
 	} catch(std::exception e) {
-		Engine()->Debug(L"Script error\n");
+		Engine()->Debug("Script error\n");
 		return false;
 	}
 
@@ -104,20 +106,20 @@ void CScriptSystem::Destroy()
 
 void CScriptSystem::PostInit()
 {
-	Sqrat::Function f = Sqrat::RootTable().GetFunction(L"OnPostInit");
+	Sqrat::Function f = Sqrat::RootTable().GetFunction("OnPostInit");
 	f.Execute();
 }
 
 void CScriptSystem::Update()
 {
-	Sqrat::Function f = Sqrat::RootTable().GetFunction(L"OnUpdate");
+	Sqrat::Function f = Sqrat::RootTable().GetFunction("OnUpdate");
 	f.Execute();
 }
 
 void CScriptSystem::Render()
 {
 	/*
-	Sqrat::Function f = Sqrat::RootTable().GetFunction(L"OnRender");
+	Sqrat::Function f = Sqrat::RootTable().GetFunction("OnRender");
 	f.Execute();
 	*/
 }

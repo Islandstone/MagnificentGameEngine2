@@ -6,20 +6,20 @@
 
 #include "script.h"
 
-#define MAKE_KEY( name ) Sqrat::ConstTable().Const(L#name, name);
+#define MAKE_KEY( name ) Sqrat::ConstTable().Const(#name, name);
 
 void BindInput()
 {
 	Sqrat::Class<CInput, Sqrat::NoConstructor> def;
 
-	def.Func(L"KeyUp", &CInput::KeyUp);
-	def.Func(L"KeyPressed", &CInput::KeyPressed);
-	def.Func(L"KeyHeld", &CInput::KeyHeld);
-	def.Func(L"KeyReleased", &CInput::KeyReleased);
+	def.Func("KeyUp", &CInput::KeyUp);
+	def.Func("KeyPressed", &CInput::KeyPressed);
+	def.Func("KeyHeld", &CInput::KeyHeld);
+	def.Func("KeyReleased", &CInput::KeyReleased);
 		
-	Sqrat::RootTable().Bind(L"InputSystem", def);
+	Sqrat::RootTable().Bind("InputSystem", def);
 	
-	//Sqrat::ConstTable().Const(L"KEY_LEFT", KEY_LEFT);
+	//Sqrat::ConstTable().Const("KEY_LEFT", KEY_LEFT);
 	MAKE_KEY( KEY_LEFT );
 	MAKE_KEY( KEY_RIGHT );
 	MAKE_KEY( KEY_UP );
@@ -32,9 +32,9 @@ void BindInput()
 
 	// Push the singleton to squirrel
 	sq_pushroottable( Sqrat::DefaultVM::Get() );
-	sq_pushstring( Sqrat::DefaultVM::Get(), L"InputSystem", -1 );
+	sq_pushstring( Sqrat::DefaultVM::Get(), "InputSystem", -1 );
 	sq_get(  Sqrat::DefaultVM::Get(), -2 );
-	sq_pushstring(  Sqrat::DefaultVM::Get(), L"Input", -1 );
+	sq_pushstring(  Sqrat::DefaultVM::Get(), "Input", -1 );
 	sq_createinstance(  Sqrat::DefaultVM::Get(), -2 );
 	sq_setinstanceup(  Sqrat::DefaultVM::Get(), -1, (SQUserPointer)Input() );
 	sq_newslot(  Sqrat::DefaultVM::Get(), -4, SQFalse );

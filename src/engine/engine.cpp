@@ -29,10 +29,12 @@ void msleep( float msec )
 #endif
 }
 
+/*
 std::string wtoa(const std::wstring& wstr)
 {
    return (std::string(wstr.begin(), wstr.end()));
 }
+*/
 
 CEngine::CEngine()
 {
@@ -41,7 +43,7 @@ CEngine::CEngine()
 
 bool CEngine::Init() 
 {
-    Message(L"Engine Init\n");
+    Message("Engine Init\n");
 
 	Timer()->Start();
 
@@ -52,7 +54,7 @@ bool CEngine::Init()
         return false;
     }
     
-    Message(L"Engine Init Successful\n");
+    Message("Engine Init Successful\n");
     return true;
 }
 
@@ -84,7 +86,7 @@ bool CEngine::InitSystems()
 
 void CEngine::Destroy()
 {
-    Message(L"Engine Destroy\n");
+    Message("Engine Destroy\n");
 
 	for (int i = 0; i < m_vecGameSystems.size(); i++)
     {
@@ -94,7 +96,7 @@ void CEngine::Destroy()
 
 void CEngine::Start()
 {   
-    Message(L"Engine Start\n");
+    Message("Engine Start\n");
 
     Main();
 }
@@ -143,7 +145,7 @@ void CEngine::Main()
         msleep(0);
     }
 
-    Message(L"Engine Main End\n");
+    Message("Engine Main End\n");
 }
 
 void CEngine::FrameAdvance()
@@ -196,16 +198,16 @@ void CEngine::PopContext()
 
 void CEngine::Stop()
 {
-    Message(L"Engine Stop\n");
+    Message("Engine Stop\n");
     Destroy();
 }
 
 void CEngine::Message( String msg )
 {
 #ifdef _WIN32
-	OutputDebugStringW( msg.c_str() );
+	OutputDebugString( msg.c_str() );
 #else
-    std::wcerr << msg << std::endl;
+    std::cerr << msg << std::endl;
 #endif
 }
 
@@ -214,13 +216,13 @@ void CEngine::Debug( String msg )
 #ifdef _WIN32
 	OutputDebugStringW( msg.c_str() );
 #else
-    std::wcerr << msg << std::endl;
+    std::cerr << msg << std::endl;
 #endif
 }
 
 void CEngine::Error( String msg )
 {
-    std::wcerr << msg << std::endl;
+    std::cerr << msg << std::endl;
 }
 
 

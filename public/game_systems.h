@@ -26,7 +26,7 @@ public:
     virtual void Render() {}
     virtual void PostRender() {}
 
-    virtual const String GetName() { return String(L"BASE"); }
+    virtual const String GetName() { return String("BASE"); }
 };
 
 #endif // GAME_SYSTEMS_H

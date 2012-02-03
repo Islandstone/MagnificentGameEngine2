@@ -47,9 +47,9 @@ void CPongBall::Init( float x, float y, float radius )
 	cdef.type = b2_staticBody;
 	shape.SetAsBox( 7/Physics()->Scale(), 7/Physics()->Scale() );
 
-	m_pCenter = Physics()->CreateBody(&shape, &cdef);
+	//m_pCenter = Physics()->CreateBody(&shape, &cdef);
 
-	m_pCenter->SetActive(false);
+	//m_pCenter->SetActive(false);
 }
 
 void CPongBall::Spawn()
@@ -74,7 +74,7 @@ void CPongBall::Think()
 {
 	if ( m_bIsDead )
 	{
-		m_pCenter->SetActive( false );
+		//m_pCenter->SetActive( false );
 		m_pBall->SetTransform( m_vInitialPos, 0.0f );
 		m_pBall->SetLinearVelocity( b2Vec2(0,0) );
 		m_pBall->SetAngularVelocity( 0.0f );
@@ -88,7 +88,7 @@ void CPongBall::Think()
 
 	if ( m_bActive && Timer()->CurrentTime() >= m_flCenterActiveTime )
 	{
-		m_pCenter->SetActive( true );
+		//m_pCenter->SetActive( true );
 	}
 }
 
@@ -107,9 +107,9 @@ void CPongBall::Die()
 void BindPongBall()
 {
 	Sqrat::Class<CPongBall> def;
-	def.Func(L"Init", &CPongBall::Init);
+	def.Func("Init", &CPongBall::Init);
 
-	Sqrat::RootTable().Bind(L"PongBall", def);
+	Sqrat::RootTable().Bind("PongBall", def);
 }
 
 ClassBinder pongBallBinder(&BindPongBall);

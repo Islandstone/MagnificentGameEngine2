@@ -39,10 +39,10 @@ void BindChainWorldBuilder()
 {
 	Sqrat::Class<ChainWorldBuilder> def;
 
-	def.Func(L"AddVertex", &ChainWorldBuilder::AddVertex);
-	def.Func(L"Finish", &ChainWorldBuilder::Finish);
+	def.Func("AddVertex", &ChainWorldBuilder::AddVertex);
+	def.Func("Finish", &ChainWorldBuilder::Finish);
 
-	Sqrat::RootTable().Bind(L"ChainWorldBuilder", def);
+	Sqrat::RootTable().Bind("ChainWorldBuilder", def);
 }
 
 ClassBinder chainWorldBinder(&BindChainWorldBuilder);

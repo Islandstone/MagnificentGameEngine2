@@ -9,18 +9,22 @@
 #include <QGLFormat>
 
 #ifdef _WIN32
-#include <gl\GLU.h>
+#include <gl/GLU.h>
+#else
+#include <GL/glu.h>
 #endif 
 
-#include <IL\il.h>
-#include <IL\ilu.h>
-#include <IL\ilut.h>
+#include <IL/il.h>
+#include <IL/ilu.h>
+#include <IL/ilut.h>
 #include "engine.h"
 
+/*
 char* toAscii(String str)
 {
 	return const_cast<char*>(QString::fromStdWString(str).toStdString().c_str());
 }
+*/
 
 int glh_extension_supported( const char *extension )
 {
@@ -61,6 +65,7 @@ int glh_extension_supported( const char *extension )
 // This has to be called before the creation of the QGLWidget
 void InitFormat()
 {
+    /*
 	QGLFormat fmt;
 
 	fmt.setDoubleBuffer(true);
@@ -68,6 +73,7 @@ void InitFormat()
 	fmt.setProfile(QGLFormat::CoreProfile);
 
 	QGLFormat::setDefaultFormat(fmt);
+    */
 }
 
 ILuint g_iTexture1 = 0;
@@ -118,6 +124,7 @@ void QtInterface::initializeGL()
 
 	glDisable( GL_DEPTH_TEST );
 
+    /*
 	// By checking this, we can enable some more efficient ways of rendering sprites
 	if ( glh_extension_supported("GL_NV_texture_rectangle") )
 	{
@@ -133,6 +140,7 @@ void QtInterface::initializeGL()
 	{
 		qDebug("No texture rectangle support");
 	}
+    */
 
 	//TODO: Engine()->Precache();
 
@@ -147,6 +155,8 @@ void QtInterface::initializeGL()
     glClearColor(0,0,0,0);
 	//glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
     setFocusPolicy(Qt::StrongFocus);
+    m_flFPS = 0.0f;
+    m_flLastTime = 0.0f;
 }
 
 void QtInterface::resizeGL(int width, int height)
@@ -195,7 +205,9 @@ void QtInterface::paintGL()
 
 	if ( Input()->KeyPressed( KEY_F5 ) )
 	{
+#ifdef _WIN32 // TODO: Update DevIl installation on linux to match newest version
 		ilutGLScreenie();
+#endif
 	}
 
 	m_iFrameCount += 1;

@@ -10,7 +10,7 @@
 
 #else
 
-#error NOT UPDATED FOR UNIX!
+#include <time.h>
 
 #endif
 
@@ -18,16 +18,16 @@ void BindTimer()
 {
 	Sqrat::Class<CTimer, Sqrat::NoConstructor> def;
 
-	//def.Func(L"Start", &CTimer::Start
-	def.Func(L"CurrentTime", &CTimer::CurrentTime);
+	//def.Func("Start", &CTimer::Start
+	def.Func("CurrentTime", &CTimer::CurrentTime);
 
-	Sqrat::RootTable().Bind(L"TimerSystem", def);
+	Sqrat::RootTable().Bind("TimerSystem", def);
 
 	// Push the singleton to squirrel
 	sq_pushroottable( Sqrat::DefaultVM::Get() );
-	sq_pushstring( Sqrat::DefaultVM::Get(), L"TimerSystem", -1 );
+	sq_pushstring( Sqrat::DefaultVM::Get(), "TimerSystem", -1 );
 	sq_get(  Sqrat::DefaultVM::Get(), -2 );
-	sq_pushstring(  Sqrat::DefaultVM::Get(), L"Timer", -1 );
+	sq_pushstring(  Sqrat::DefaultVM::Get(), "Timer", -1 );
 	sq_createinstance(  Sqrat::DefaultVM::Get(), -2 );
 	sq_setinstanceup(  Sqrat::DefaultVM::Get(), -1, (SQUserPointer)Timer() );
 	sq_newslot(  Sqrat::DefaultVM::Get(), -4, SQFalse );
@@ -38,9 +38,13 @@ ClassBinder timerBinder(&BindTimer);
 
 CTimer::CTimer()
 {	
+    //m_flStartTime = 0;
+#ifdef _WIN32
 	m_iStart = 0;
-    m_flStartTime = 0;
     m_iClockFrequency = -1;
+#else 
+    m_ulStartTime = 0;
+#endif
 }
 
 #ifdef _WIN32
@@ -64,12 +68,13 @@ void CTimer::Start()
 #ifdef _WIN32
     m_iStart = CTimer::GetPerformanceCount();
     m_iClockFrequency = CTimer::GetFrequency();
-#else
+#else 
+    timespec t;
+    clock_gettime(CLOCK_REALTIME, &t);
 
+    m_ulStartTime = t.tv_sec + (t.tv_nsec / 1000000000.0f);
 #endif
-
 	m_bStarted = true;
-	m_flStartTime = CurrentTime();
 }
 
 float CTimer::CurrentTime()
@@ -82,15 +87,30 @@ float CTimer::CurrentTime()
 
     return ((float)(CTimer::GetPerformanceCount() - m_iStart))/(float)m_iClockFrequency;
 #else
-	return 0.0f;
+    timespec t;
+    clock_gettime(CLOCK_REALTIME, &t);
+
+	return t.tv_sec + (t.tv_nsec / 1000000000.0f) - m_ulStartTime;
+#endif
+}
+
+int CTimer::RandomSeed()
+{
+#ifdef _WIN32
+    return GetPerformanceCount() / GetFrequency();
+#else
+    return 0;
 #endif
 }
 
 void CTimer::Reset()
 {
 	m_bStarted = false;
+
+#ifdef _WIN32
     m_iStart = 0;
     m_iClockFrequency = -1;
+#endif
 }
 
 void CTimer::Restart()

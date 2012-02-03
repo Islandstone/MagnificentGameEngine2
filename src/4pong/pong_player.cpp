@@ -61,9 +61,9 @@ void CPongPlayer::Think()
 void BindPongPlayer()
 {
 	Sqrat::Class<CPongPlayer> def;
-	def.Func(L"Init", &CPongPlayer::Init);
+	def.Func("Init", &CPongPlayer::Init);
 
-	Sqrat::RootTable().Bind(L"PongPlayer", def);
+	Sqrat::RootTable().Bind("PongPlayer", def);
 }
 
 ClassBinder pongBinder(&BindPongPlayer);

@@ -5,7 +5,9 @@
 TEMPLATE = app
 TARGET = engine
 DEPENDPATH += . public src/engine src/include
-INCLUDEPATH += . public src/include
+INCLUDEPATH += . public src/include /usr/include
+#DEFINES += _UNICODE
+# CXXFLAGS += -m32
 
 win32 {
     INCLUDEPATH += "$$(FMOD_DIR)/api/inc/"
@@ -20,18 +22,21 @@ win32 {
 }
 
 unix {
-    INCLUDEPATH += /usr/local/include/fmodex
-    LIBS += -lGL -lGLU -lglut -lfmodex64-4.38.03
+    INCLUDEPATH += /usr/include/fmodex
+    LIBS += -lGL -lGLU -lglut -lfmodex -lsquirrel -lsqstdlib -lIL -lILU -lILUT -lBox2D -lrt
 }
 
 # Input
 HEADERS += public/base.h \
+           public/base_object.h \
            public/engine.h \
            public/game_systems.h \
            public/gameinterface.h \
            public/input.h \
            public/physics.h \
            public/sound.h \
+           public/script.h \
+           public/timer.h \
            src/include/qt_gl_interface.h
 
 SOURCES += src/engine/engine.cpp \
@@ -39,6 +44,21 @@ SOURCES += src/engine/engine.cpp \
            src/engine/main.cpp \
   	       src/engine/input.cpp \
            src/engine/qt_gl_interface.cpp \
-           src/engine/sound.cpp
+           src/engine/sound.cpp \
+           src/engine/script.cpp \
+           src/engine/timer.cpp \
+           src/engine/physics.cpp \
+           src/engine/base_object.cpp \
+           src/engine/chainworldbuilder.cpp
+
+#4pong stuff
+HEADERS += src/4pong/pong_ball.h \
+           src/4pong/pong_deathwall.h \
+           src/4pong/pong_player.h \
+
+SOURCES += src/4pong/pong_ball.cpp \
+           src/4pong/pong_deathwall.cpp \
+           src/4pong/pong_player.cpp \
+
 
 QT += opengl

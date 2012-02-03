@@ -5,9 +5,9 @@ void BindDeathWall()
 {
 	Sqrat::Class<CPongDeathWall> def;
 
-	def.Func(L"Init", &CPongDeathWall::Init);
+	def.Func("Init", &CPongDeathWall::Init);
 
-	Sqrat::RootTable().Bind(L"PongDeathWall", def);
+	Sqrat::RootTable().Bind("PongDeathWall", def);
 }
 
 ClassBinder deathWallBinder(&BindDeathWall);

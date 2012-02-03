@@ -2,7 +2,7 @@
 #define _PHYSICS_INCLUDE
 
 #include "game_systems.h"
-#include "Box2D\Box2D.h"
+#include "Box2D/Box2D.h"
 #include "script.h"
 
 #define PHYSICS_SCALE (30.0f)
@@ -26,7 +26,7 @@ public:
 
 	b2World* World() { return m_pWorld; }
 
-	const String GetName() { return String(L"Physics"); }
+	const String GetName() { return String("Physics"); }
 
 	// Physics stuff
 	inline float Scale() { return PHYSICS_SCALE; }
